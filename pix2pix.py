@@ -15,8 +15,8 @@ class DaiPix2pix(Network):
                  criterion = nn.L1Loss(),
                  criterionL1 = nn.L1Loss(),
                  criterion_gan = networks.GANLoss('vanilla'),
-                 optimizer_g_x = optim.Adam,
-                 optimizer_d_x = optim.Adam,
+                 optimizer_g_x = None,
+                 optimizer_d_x = None,
                  device = None,
                  best_validation_loss = None,
                  best_psnr = None,
@@ -29,8 +29,9 @@ class DaiPix2pix(Network):
 
         self.g_x = g_x.to(device)
         self.d_x = d_x.to(device)
-        optimizer_g_x = optimizer_g_x(self.g_x.parameters(), lr=0.0002)
-        optimizer_d_x = optimizer_d_x(self.d_x.parameters(), lr=0.0002)
+        if optimizer_g_x is None:
+            optimizer_g_x = optim.Adam(self.g_x.parameters(), lr=0.0002)
+            optimizer_d_x = optim.Adam(self.d_x.parameters(), lr=0.0002)
 
         self.set_model_params(criterion=criterion, criterion_gan=criterion_gan, criterionL1=criterionL1,
                               optimizer_g_x=optimizer_g_x, optimizer_d_x=optimizer_d_x, lambda_L1=lambda_L1,
